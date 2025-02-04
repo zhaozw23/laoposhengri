@@ -86,6 +86,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: transform 0.3s ease;
             animation: fadeIn 1s ease-out;
+            cursor: pointer;
         }
 
         @media (max-width: 768px) {
@@ -148,7 +149,7 @@
     <canvas id="confetti-canvas"></canvas>
     <div class="hearts" id="hearts"></div>
     <div class="container">
-        <h1>🎂亲亲老婆25岁生日快乐！🥳</h1>
+        <h1>🎂宇宙无敌最可爱老婆25岁生日快乐！🥳</h1>
         
         <div class="photo-row">
             <img src="laoposhenri.webp" 
@@ -156,7 +157,8 @@
                  class="couple-photo">
             <img src="laoposhenri2.jpg" 
                  alt="这张真不错！" 
-                 class="couple-photo">
+                 class="couple-photo"
+                 id="secret-photo">
         </div>
 
         <p class="subtitle">❤️愿与你共度每一个春夏秋冬 -- 爱你的猪猪🥰</p>
@@ -170,19 +172,17 @@
             canvas.height = window.innerHeight;
 
             const confetti = [];
-            // 统一参数设置
-            const confettiCount = 160;           // 适中的粒子数量
-            const baseSpeed = 12;                // 统一喷射速度
-            const gravity = 0.4;                 // 统一重力参数
+            const confettiCount = 160;
+            const baseSpeed = 12;
+            const gravity = 0.4;
             const colors = ['#ff3860', '#ff69b4', '#ffd700', '#7fff00', '#00bfff'];
 
             let lastFrameTime = Date.now();
 
-            // 初始化所有粒子
             for (let i = 0; i < confettiCount; i++) {
                 confetti.push({
                     x: Math.random() * canvas.width,
-                    y: canvas.height + 50,  // 统一从屏幕底部外开始
+                    y: canvas.height + 50,
                     radius: Math.random() * 5 + 3,
                     color: colors[Math.floor(Math.random() * colors.length)],
                     velocityY: -Math.random() * baseSpeed - baseSpeed,
@@ -229,7 +229,6 @@
                 }
             }
 
-            // 5秒安全超时
             setTimeout(() => {
                 if (canvas.parentElement) {
                     canvas.remove();
@@ -244,7 +243,7 @@
             const heartsContainer = document.getElementById('hearts');
             
             function createHearts() {
-                const heartCount = 35;  // 统一爱心数量
+                const heartCount = 35;
 
                 for (let i = 0; i < heartCount; i++) {
                     const heart = document.createElement('div');
@@ -253,7 +252,7 @@
                     heart.style.setProperty('--start-pos', Math.random());
                     heart.style.left = Math.random() * 100 + '%';
                     heart.style.animationDelay = `-${Math.random() * 3}s`;
-                    heart.style.fontSize = '22px';  // 统一爱心尺寸
+                    heart.style.fontSize = '22px';
                     heartsContainer.appendChild(heart);
                 }
             }
@@ -276,6 +275,11 @@
 
             createHearts();
         }
+
+        // 彩蛋功能：点击第二张图片跳转
+        document.getElementById('secret-photo').addEventListener('click', function() {
+            window.open('secret.html', '_blank');
+        });
 
         window.onload = createConfetti;
     </script>
