@@ -171,28 +171,26 @@
 
             const isMobile = /Mobi|Android/i.test(navigator.userAgent);
             const confetti = [];
-            // 调整移动端彩带参数
-            const confettiCount = isMobile ? 150 : 200;
-            const baseSpeed = isMobile ? 18 : 12;  // 移动端增加初速度
-            const gravity = isMobile ? 0.3 : 0.5;  // 移动端减小重力
+            
+            // 调整后的速度参数（整体减慢）
+            const confettiCount = isMobile ? 120 : 180;  // 适当减少粒子数量
+            const baseSpeed = isMobile ? 14 : 10;        // 降低初始速度
+            const gravity = isMobile ? 0.2 : 0.3;        // 减小重力
             const colors = ['#ff3860', '#ff69b4', '#ffd700', '#7fff00', '#00bfff'];
 
             let lastFrameTime = Date.now();
 
+            // 单次喷射初始化
             for (let i = 0; i < confettiCount; i++) {
                 confetti.push({
                     x: Math.random() * canvas.width,
-                    // 修改移动端初始Y坐标（从屏幕中间开始）
                     y: isMobile ? canvas.height * 0.7 : canvas.height + 50,
                     radius: Math.random() * 5 + 3,
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    // 调整移动端Y轴速度范围
-                    velocityY: isMobile ? 
-                        -Math.random() * baseSpeed - baseSpeed * 0.8 : 
-                        -Math.random() * baseSpeed - baseSpeed,
-                    velocityX: Math.random() * 3 - 1.5,
+                    velocityY: -Math.random() * baseSpeed - baseSpeed * 0.8,
+                    velocityX: Math.random() * 2 - 1,  // 减慢横向速度
                     angle: Math.random() * Math.PI * 2,
-                    spin: Math.random() * 0.1 - 0.05
+                    spin: Math.random() * 0.08 - 0.04  // 减慢旋转速度
                 });
             }
 
@@ -203,42 +201,45 @@
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
+                let activeParticles = 0;
+                
                 confetti.forEach(particle => {
-                    ctx.save();
-                    ctx.translate(particle.x, particle.y);
-                    ctx.rotate(particle.angle);
-                    ctx.fillStyle = particle.color;
-                    ctx.beginPath();
-                    ctx.rect(-5, -5, 10, 10);
-                    ctx.fill();
-                    ctx.restore();
+                    // 只绘制还在可视区域内的粒子
+                    if (particle.y < canvas.height + 100) {
+                        ctx.save();
+                        ctx.translate(particle.x, particle.y);
+                        ctx.rotate(particle.angle);
+                        ctx.fillStyle = particle.color;
+                        ctx.beginPath();
+                        ctx.rect(-5, -5, 10, 10);
+                        ctx.fill();
+                        ctx.restore();
 
-                    particle.velocityY += gravity * deltaTime * 60;
-                    particle.y += particle.velocityY * deltaTime * 60;
-                    particle.x += particle.velocityX * deltaTime * 60;
-                    particle.angle += particle.spin * deltaTime * 60;
-
-                    if (particle.y > canvas.height + 100) {
-                        resetParticle(particle);
+                        particle.velocityY += gravity * deltaTime * 60;
+                        particle.y += particle.velocityY * deltaTime * 60;
+                        particle.x += particle.velocityX * deltaTime * 60;
+                        particle.angle += particle.spin * deltaTime * 60;
+                        
+                        activeParticles++;
                     }
                 });
 
-                requestAnimationFrame(draw);
+                // 当所有粒子都消失后停止动画
+                if (activeParticles > 0) {
+                    requestAnimationFrame(draw);
+                } else {
+                    canvas.remove();
+                    initHearts();
+                }
             }
 
-            function resetParticle(p) {
-                // 重置时保持移动端初始高度
-                p.y = isMobile ? canvas.height * 0.7 : canvas.height + 50;
-                p.velocityY = isMobile ? 
-                    -Math.random() * baseSpeed - baseSpeed * 0.8 : 
-                    -Math.random() * baseSpeed - baseSpeed;
-                p.x = Math.random() * canvas.width;
-            }
-
+            // 延长喷射显示时间
             setTimeout(() => {
-                canvas.remove();
+                if (canvas.parentElement) {
+                    canvas.remove();
+                }
                 initHearts();
-            }, isMobile ? 4000 : 3000);
+            }, 5000);  // 统一5秒后移除
 
             draw();
         }
@@ -248,7 +249,7 @@
             
             function createHearts() {
                 const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-                const heartCount = isMobile ? 30 : 50;
+                const heartCount = isMobile ? 25 : 40;  // 适当减少爱心数量
 
                 for (let i = 0; i < heartCount; i++) {
                     const heart = document.createElement('div');
@@ -257,7 +258,7 @@
                     heart.style.setProperty('--start-pos', Math.random());
                     heart.style.left = Math.random() * 100 + '%';
                     heart.style.animationDelay = `-${Math.random() * 3}s`;
-                    heart.style.fontSize = isMobile ? '20px' : '24px';
+                    heart.style.fontSize = isMobile ? '18px' : '22px';  // 减小爱心尺寸
                     heartsContainer.appendChild(heart);
                 }
             }
