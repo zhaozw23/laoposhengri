@@ -164,7 +164,7 @@
     </div>
 
     <script>
-        // 彩带喷射效果保持不变
+        // 修改后的彩带喷射效果（统一参数）
         function createConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
@@ -175,8 +175,9 @@
             const confetti = [];
             const confettiCount = isMobile ? 150 : 200;
             
-            const baseSpeed = isMobile ? 8 : 12;
-            const gravity = isMobile ? 0.3 : 0.5;
+            // 统一桌面端和移动端参数
+            const baseSpeed = 12;  // 统一喷射速度
+            const gravity = 0.5;   // 统一重力参数
             const colors = ['#ff3860', '#ff69b4', '#ffd700', '#7fff00', '#00bfff'];
 
             let lastFrameTime = Date.now();
@@ -238,7 +239,7 @@
             draw();
         }
 
-        // 修改后的爱心雨系统
+        // 爱心雨系统保持不变
         function initHearts() {
             const heartsContainer = document.getElementById('hearts');
             
@@ -254,7 +255,7 @@
                     // 设置随机初始位置
                     heart.style.setProperty('--start-pos', Math.random());
                     heart.style.left = Math.random() * 100 + '%';
-                    heart.style.animationDelay = `-${Math.random() * 3}s`; // 负延迟
+                    heart.style.animationDelay = `-${Math.random() * 3}s`;
                     heart.style.fontSize = isMobile ? '20px' : '24px';
                     
                     heartsContainer.appendChild(heart);
