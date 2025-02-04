@@ -49,6 +49,29 @@
             animation: fall 3s linear infinite;
         }
 
+        /* 新增图片样式 */
+        .birthday-photo {
+            width: 65%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin: 30px auto;
+            display: block;
+            transition: transform 0.3s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .birthday-photo:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .birthday-photo {
+                width: 85%;
+                margin: 20px auto;
+            }
+        }
+
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -67,16 +90,20 @@
                 opacity: 0;
             }
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div class="hearts" id="hearts"></div>
     <div class="container">
         <h1>🎉 祝我的亲亲老婆25岁生日快乐！ 🎂</h1>
-        <!-- 新增图片代码 -->
-  <img src="laoposhenri.webp" 
-       alt="可爱老婆"
-       class="birthday-photo">
+        <img src="laoposhenri.webp" 
+             alt="最爱的宝贝"
+             class="birthday-photo">
         <p class="subtitle">❤️ 愿与你共度每一个春夏秋冬 -- 爱你的猪猪 ❤️</p>
     </div>
 
