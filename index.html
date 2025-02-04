@@ -33,7 +33,7 @@
             width: 100%;
             max-width: 1200px;
             position: relative;
-            z-index: 1;
+            z-index: 2; /* 提升层级 */
         }
 
         h1 {
@@ -59,6 +59,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 1; /* 确保在容器之下 */
         }
 
         .heart {
@@ -67,6 +68,7 @@
             animation: fall 3s linear infinite;
             opacity: 0.8;
             transform: translateY(calc(-100% - (100vh * var(--start-pos, 0))));
+            pointer-events: none; /* 双重保险 */
         }
 
         .photo-row {
@@ -87,6 +89,8 @@
             transition: transform 0.3s ease;
             animation: fadeIn 1s ease-out;
             cursor: pointer;
+            position: relative;
+            z-index: 3; /* 图片单独层级 */
         }
 
         @media (max-width: 768px) {
@@ -276,11 +280,22 @@
             createHearts();
         }
 
-        // 彩蛋功能：点击第二张图片跳转
-        document.getElementById('secret-photo').addEventListener('click', function() {
-            window.open('secret.html', '_blank');
-        });
+        // 修复点击事件绑定
+        function bindSecret() {
+            const secretPhoto = document.getElementById('secret-photo');
+            const handler = () => window.open('secret.html', '_blank');
+            
+            // 移除旧监听器避免重复绑定
+            secretPhoto.removeEventListener('click', handler);
+            secretPhoto.removeEventListener('touchstart', handler);
+            
+            // 添加新监听器
+            secretPhoto.addEventListener('click', handler);
+            secretPhoto.addEventListener('touchstart', handler);
+        }
 
+        // 初始化绑定
+        bindSecret();
         window.onload = createConfetti;
     </script>
 </body>
