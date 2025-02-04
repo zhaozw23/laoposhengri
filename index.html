@@ -2,11 +2,12 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 新增视口适配 -->
     <title>宇宙无敌最可爱老婆25岁生日快乐！</title>
     <style>
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh; /* 改用min-height适配移动端 */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -15,26 +16,31 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             font-family: 'Microsoft YaHei', sans-serif;
+            padding: 15px; /* 增加安全边距 */
         }
 
         .container {
             text-align: center;
+            width: 100%; /* 确保容器宽度适配 */
+            max-width: 1200px; /* 限制最大宽度 */
         }
 
         h1 {
-            font-size: 4vw;
+            font-size: clamp(24px, 4vw, 40px); /* 响应式字体大小 */
             color: #fff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             animation: heartbeat 1.5s ease-in-out infinite;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            padding: 0 10px; /* 防止文字溢出 */
         }
 
         .subtitle {
-            font-size: 2.5vw;
-            color: #ff69b4; 
+            font-size: clamp(18px, 2.5vw, 24px); /* 响应式字体大小 */
+            color: #ff1493; /* 增强对比度 */
             font-style: italic;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.3); /* 增加白色阴影提升可读性 */
-            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            margin-top: 25px;
+            padding: 0 15px; /* 移动端安全边距 */
         }
 
         .hearts {
@@ -50,36 +56,57 @@
             animation: fall 3s linear infinite;
         }
 
-        /* 新增双图样式 */
+        /* 优化后的图片布局 */
         .photo-row {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin: 30px 0;
+            margin: 25px 0;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .couple-photo {
-            width: 40%;
+            width: 100%;
             max-width: 400px;
-            min-width: 250px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: transform 0.3s ease;
             animation: fadeIn 1s ease-out;
         }
 
-        .couple-photo:hover {
-            transform: scale(1.03);
-        }
-
+        /* 移动端专属适配 */
         @media (max-width: 768px) {
             .photo-row {
                 flex-direction: column;
                 align-items: center;
+                gap: 25px; /* 增加图片间距 */
+                margin: 20px 0;
             }
+
             .couple-photo {
-                width: 80%;
+                width: 90%; /* 更宽显示 */
+                max-width: none;
+                border-radius: 8px; /* 更圆角 */
+            }
+
+            body {
+                padding: 10px; /* 缩小边距 */
+                justify-content: flex-start; /* 顶部对齐 */
+                min-height: 100vh;
+            }
+
+            .subtitle {
+                margin-top: 15px;
+                line-height: 1.4; /* 增加行高 */
+            }
+        }
+
+        /* 大屏优化 */
+        @media (min-width: 769px) {
+            .couple-photo {
+                width: calc(50% - 40px); /* 两列布局 */
             }
         }
 
@@ -91,7 +118,7 @@
 
         @keyframes heartbeat {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); } /* 减弱动画幅度 */
             100% { transform: scale(1); }
         }
 
@@ -111,47 +138,58 @@
 <body>
     <div class="hearts" id="hearts"></div>
     <div class="container">
-        <h1>🎂 祝我的亲亲老婆25岁生日快乐！🥳 </h1>
+        <h1>🎂祝我的亲亲老婆25岁生日快乐！🥳</h1>
         
-        <!-- 双图并列区域 -->
         <div class="photo-row">
             <img src="laoposhenri.webp" 
-                 alt="老婆就像可爱狗狗嘿嘿" 
+                 alt="可爱老婆就像小狗狗！" 
                  class="couple-photo">
             <img src="laoposhenri2.jpg" 
                  alt="这张真不错！" 
                  class="couple-photo">
         </div>
 
-        <p class="subtitle">❤️ 愿与你共度每一个春夏秋冬 -- 爱你的猪猪 🥰</p>
+        <p class="subtitle">❤️愿与你共度每一个春夏秋冬 -- 爱你的猪猪🥰</p>
     </div>
 
     <script>
-        // 创建爱心雨效果
+        // 优化后的爱心雨脚本
         function createHearts() {
             const heartsContainer = document.getElementById('hearts');
-            for (let i = 0; i < 50; i++) {
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            
+            // 根据设备调整爱心数量
+            const heartCount = isMobile ? 30 : 50;
+
+            for (let i = 0; i < heartCount; i++) {
                 const heart = document.createElement('div');
                 heart.innerHTML = '❤';
                 heart.className = 'heart';
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.fontSize = isMobile ? '20px' : '24px'; // 适配字号
                 heartsContainer.appendChild(heart);
             }
         }
 
-        // 初始化
+        // 触摸事件支持
         window.onload = function() {
             createHearts();
             
-            // 添加点击事件（可选）
-            document.body.addEventListener('click', function() {
+            // 同时支持点击和触摸
+            const addHeart = (clientX) => {
                 const heart = document.createElement('div');
                 heart.innerHTML = '❤';
                 heart.className = 'heart';
-                heart.style.left = event.clientX + 'px';
-                heartsContainer.appendChild(heart);
-            });
+                heart.style.left = clientX + 'px';
+                document.getElementById('hearts').appendChild(heart);
+            }
+
+            document.body.addEventListener('click', (e) => addHeart(e.clientX));
+            document.body.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                addHeart(e.touches[0].clientX);
+            }, { passive: false });
         }
     </script>
 </body>
