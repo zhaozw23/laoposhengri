@@ -157,66 +157,84 @@
     </div>
 
     <script>
-        // 喷射彩带效果
-        function createConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+// 修改后的彩带喷射效果
+function createConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-            const confetti = [];
-            const confettiCount = 200;
-            const colors = ['#ff3860', '#ff69b4', '#ffd700', '#7fff00', '#00bfff'];
-            const gravity = 0.5;
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    const confetti = [];
+    const confettiCount = isMobile ? 150 : 200; // 移动端减少粒子数量
+    
+    // 设备相关参数调整
+    const baseSpeed = isMobile ? 8 : 12; // 基础速度调整
+    const gravity = isMobile ? 0.3 : 0.5; // 移动端减小重力
+    const colors = ['#ff3860', '#ff69b4', '#ffd700', '#7fff00', '#00bfff'];
 
-            for (let i = 0; i < confettiCount; i++) {
-                confetti.push({
-                    x: Math.random() * canvas.width,
-                    y: canvas.height + 50,
-                    radius: Math.random() * 5 + 3,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    velocityY: -Math.random() * 15 - 10,
-                    velocityX: Math.random() * 4 - 2,
-                    angle: Math.random() * Math.PI * 2,
-                    spin: Math.random() * 0.1 - 0.05
-                });
+    let lastFrameTime = Date.now();
+
+    // 粒子初始化
+    for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+            x: Math.random() * canvas.width,
+            y: canvas.height + 50,
+            radius: Math.random() * 5 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            velocityY: -Math.random() * baseSpeed - baseSpeed, // 基于设备调整速度
+            velocityX: Math.random() * 3 - 1.5,
+            angle: Math.random() * Math.PI * 2,
+            spin: Math.random() * 0.1 - 0.05
+        });
+    }
+
+    function draw() {
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - lastFrameTime) / 1000; // 计算时间差
+        lastFrameTime = currentTime;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        confetti.forEach(particle => {
+            ctx.save();
+            ctx.translate(particle.x, particle.y);
+            ctx.rotate(particle.angle);
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.rect(-5, -5, 10, 10);
+            ctx.fill();
+            ctx.restore();
+
+            // 使用deltaTime保证不同刷新率设备动画一致
+            particle.velocityY += gravity * deltaTime * 60; // 标准化到60fps
+            particle.y += particle.velocityY * deltaTime * 60;
+            particle.x += particle.velocityX * deltaTime * 60;
+            particle.angle += particle.spin * deltaTime * 60;
+
+            if (particle.y > canvas.height + 100) {
+                resetParticle(particle);
             }
+        });
 
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                confetti.forEach(particle => {
-                    ctx.save();
-                    ctx.translate(particle.x, particle.y);
-                    ctx.rotate(particle.angle);
-                    ctx.fillStyle = particle.color;
-                    ctx.beginPath();
-                    ctx.rect(-5, -5, 10, 10);
-                    ctx.fill();
-                    ctx.restore();
+        requestAnimationFrame(draw);
+    }
 
-                    particle.velocityY += gravity;
-                    particle.y += particle.velocityY;
-                    particle.x += particle.velocityX;
-                    particle.angle += particle.spin;
+    // 重置粒子参数
+    function resetParticle(p) {
+        p.y = canvas.height + 50;
+        p.velocityY = -Math.random() * baseSpeed - baseSpeed;
+        p.x = Math.random() * canvas.width;
+    }
 
-                    if (particle.y > canvas.height + 100) {
-                        particle.y = canvas.height + 50;
-                        particle.velocityY = -Math.random() * 15 - 10;
-                        particle.x = Math.random() * canvas.width;
-                    }
-                });
+    setTimeout(() => {
+        canvas.remove();
+        initHearts();
+    }, isMobile ? 4000 : 3000); // 移动端延长持续时间
 
-                requestAnimationFrame(draw);
-            }
+    draw();
+}
 
-            setTimeout(() => {
-                canvas.remove();
-                initHearts();
-            }, 3000);
-
-            draw();
-        }
 
         // 爱心雨系统
         function initHearts() {
